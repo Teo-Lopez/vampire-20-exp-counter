@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc && vite build",
     "watch": "tsc && vite build --watch",
-    "package": "zip -r vampire-20-exp-counter.zip dist/"
+    "package": "zip -r vampire-20-exp-counter.zip dist/",
+    "publish": "npm run build && npm run package"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^12.331.3-beta",
