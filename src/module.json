@@ -8,9 +8,9 @@
   "dependencies": [],
   "scripts": [],
   "compatibility": {
-    "minimum": "9",
-    "verified": "10",
-    "maximum": "10"
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12"
   },
   "languages": [
     {
