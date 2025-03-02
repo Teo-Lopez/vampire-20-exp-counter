@@ -24,5 +24,6 @@
     ],
     "esmodules": [
         "scripts/module.js"
-    ]
+    ],
+    "download": "https://github.com/Teo-Lopez/vampire-20-exp-counter/releases/download/0.0.1/vampire-20-exp-counter.zip"
 }
