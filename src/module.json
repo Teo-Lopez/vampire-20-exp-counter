@@ -1,0 +1,24 @@
+{
+  "id": "vampire-20-exp-counter",
+  "title": "Vampire 20th Anniversary Edition Experience Counter",
+  "description": "A simple module to add an experience counter to the character sheet for Vampire: The Masquerade 20th Anniversary Edition.",
+  "version": "1.0.0",
+  "packs": [],
+  "system": [],
+  "dependencies": [],
+  "scripts": [],
+  "compatibility": {
+    "minimum": "9",
+    "verified": "10",
+    "maximum": "10"
+  },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
+  "styles": ["style.css"],
+  "esmodules": ["scripts/module.js"]
+}
