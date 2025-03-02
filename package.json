@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "build": "tsc && vite build",
-    "watch": "tsc && vite build --watch"
+    "watch": "tsc && vite build --watch",
+    "package": "zip -r vampire-20-exp-counter.zip dist/"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^12.331.3-beta",

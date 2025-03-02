@@ -2,6 +2,7 @@
 // code and not include them in the build output.
 import '../styles/style.scss';
 import DogBrowser from './apps/dogBrowser';
+import ExperienceCounter from './apps/experienceCounter';
 import { moduleId } from './constants';
 import { MyModule } from './types';
 
@@ -10,7 +11,7 @@ let module: MyModule;
 Hooks.once('init', () => {
   console.log(`Initializing ${moduleId}`);
   //moduleId "vampire-20-exp-counter"
-  module = (game as Game).modules.get(moduleId) as MyModule;
+  module = (game as Game).modules.get(moduleId) as unknown as MyModule;
   module.dogBrowser = new DogBrowser();
   module.experienceCounter = new ExperienceCounter();
 });

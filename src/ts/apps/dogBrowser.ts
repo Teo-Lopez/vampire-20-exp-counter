@@ -1,15 +1,15 @@
-import { moduleId } from "../constants";
+import { moduleId } from '../constants';
 
 export default class DogBrowser extends Application {
-  private imageUrl? = "";
+  private imageUrl? = '';
 
   override get title(): string {
-    return (game as Game).i18n.localize("MYMODULE.dog-browser");
+    return (game as Game).i18n!.localize('MYMODULE.dog-browser');
   }
 
   static override get defaultOptions(): ApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "dog-browser",
+      id: 'dog-browser',
       template: `modules/${moduleId}/templates/dogs.hbs`,
       width: 720,
       height: 720,
@@ -24,9 +24,7 @@ export default class DogBrowser extends Application {
 
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
-    html
-      .find("button.module-control")
-      .on("click", this._onClickControlButton.bind(this));
+    html.find('button.module-control').on('click', this._onClickControlButton.bind(this));
   }
 
   async _onClickControlButton(event: Event): Promise<void> {
@@ -36,18 +34,16 @@ export default class DogBrowser extends Application {
     // const module = (game as Game).modules.get(moduleName) as MyModule;
 
     switch (action) {
-      case "randomize-dog":
+      case 'randomize-dog':
         this._randomizeDog();
         break;
     }
   }
 
   async _randomizeDog() {
-    const response = await fetch("https://dog.ceo/api/breeds/image/random");
+    const response = await fetch('https://dog.ceo/api/breeds/image/random');
     if (response.status != 200) {
-      ui.notifications?.error(
-        `Unexpected response fetching new dog image: ${response.status}: ${response.statusText}`
-      );
+      ui.notifications?.error(`Unexpected response fetching new dog image: ${response.status}: ${response.statusText}`);
       return;
     }
     this.imageUrl = (await response.json()).message;
