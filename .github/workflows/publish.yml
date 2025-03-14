@@ -1,9 +1,6 @@
 name: Publish release
 
-on:
-  release:
-    types: [published]
-
+on: push
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,15 +31,15 @@ jobs:
         working-directory: dist
         run: zip -r ./module.zip module.json style.css scripts/ templates/ languages/
 
-      - name: Update release with files
-        id: create_version_release
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true # Set this to false if you want to prevent updating existing releases
-          name: ${{ github.event.release.name }}
-          draft: ${{ github.event.release.unpublished }}
-          prerelease: ${{ github.event.release.prerelease }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "./dist/module.json, ./dist/module.zip"
-          tag: ${{ github.event.release.tag_name }}
-          body: ${{ github.event.release.body }}
+      # - name: Update release with files
+      #   id: create_version_release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     allowUpdates: true # Set this to false if you want to prevent updating existing releases
+      #     name: ${{ github.event.release.name }}
+      #     draft: ${{ github.event.release.unpublished }}
+      #     prerelease: ${{ github.event.release.prerelease }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     artifacts: "./dist/module.json, ./dist/module.zip"
+      #     tag: ${{ github.event.release.tag_name }}
+      #     body: ${{ github.event.release.body }}
