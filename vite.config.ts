@@ -8,14 +8,15 @@ const githubProject = process.env.GH_PROJECT
 const githubTag = process.env.GH_TAG
 
 console.log(process.env.VSCODE_INJECTION)
-const distPath = import.meta.env.DEV ? '../vampire-20-exp-counter' : 'dist'
+const DIST_PATH_DEV = '../vampire-20-exp-counter'
+const DIST_PATH_PROD = 'dist'
 export default defineConfig({
   build: {
     sourcemap: true,
     rollupOptions: {
       input: 'src/ts/module.ts',
       output: {
-        dir: `${distPath}/scripts`,
+        dir: `${DIST_PATH_PROD}/scripts`,
         entryFileNames: 'module.js',
         format: 'es',
       },
@@ -24,14 +25,14 @@ export default defineConfig({
   plugins: [
     updateModuleManifestPlugin(),
     scss({
-      output: `${distPath}/style.css`,
+      output: `${DIST_PATH_PROD}/style.css`,
       sourceMap: true,
       watch: ['src/styles/*.scss'],
     }),
     copy({
       targets: [
-        { src: 'src/languages', dest: `${distPath}` },
-        { src: 'src/templates', dest: `${distPath}` },
+        { src: 'src/languages', dest: `${DIST_PATH_PROD}` },
+        { src: 'src/templates', dest: `${DIST_PATH_PROD}` },
       ],
       hook: 'writeBundle',
     }),
@@ -65,7 +66,7 @@ function updateModuleManifestPlugin(): Plugin {
         }
       }
       await fsPromises.writeFile(
-        `${distPath}/module.json`,
+        `${DIST_PATH_PROD}/module.json`,
         JSON.stringify(manifestJson, null, 4)
       )
     },
