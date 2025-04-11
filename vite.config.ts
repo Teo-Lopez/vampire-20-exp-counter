@@ -65,7 +65,7 @@ function updateModuleManifestPlugin(): Plugin {
         }
       }
       await fsPromises.writeFile(
-        `${distPath}/module.json',
+        `${distPath}/module.json`,
         JSON.stringify(manifestJson, null, 4)
       )
     },
