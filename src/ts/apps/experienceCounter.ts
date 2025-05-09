@@ -10,13 +10,37 @@ interface AttributeChange {
 
 export default class ExperienceCounter extends Application {
   previousActor: Actor | null = null
+  previousItem: Item | null = null
 
-  newAcquisitionCosts: Record<string, number> = {
-    abilities: 3,
+  maybeAddItemExperienceCost(changed: Changed, item: Item, parent: Actor) {
+    if (!this.previousItem) return
+    console.log('item', item)
+    console.log('parent', parent)
+    const property = (item.system as Record<string, any>).type
+    const propertyConfig = propertiesMap[property]
+    if (!propertyConfig) {
+      throw new Error(`Property ${property} not found in propertiesMap`)
+    }
+    const key: string = propertyConfig.key
+
+    const oldValue = (this.previousItem.system as Record<string, any>)[key]
+    const newValue = changed.system.value
+
+    const amount = this.calcExperienceCost({
+      property,
+      oldValue,
+      newValue,
+    })
+
+    this.createExperienceItem(
+      { amount, property: item.name, oldValue, newValue },
+      parent
+    )
   }
 
   maybeAddExperienceCost(changed: Changed, actor: Actor) {
     const property = this.searchPropertyRecursively(changed)
+
     if (property) {
       this.updateAttribute(changed, actor, property)
     }
@@ -101,20 +125,34 @@ export default class ExperienceCounter extends Application {
   }
 
   calcExperienceCost({ oldValue, newValue, property }: AttributeChange) {
-    const { path, multiplier } = propertiesMap[property]
+    const { multiplier, acquisitionCost } = propertiesMap[property]
 
-    const amount = this.sumExperienceCost(oldValue, newValue, multiplier)
-    return amount || this.newAcquisitionCosts[path[0]]
+    const amount = this.sumExperienceCost(
+      oldValue,
+      newValue,
+      multiplier,
+      acquisitionCost
+    )
+    return amount === 0 ? acquisitionCost : amount
   }
 
-  sumExperienceCost(oldValue: number, newValue: number, multiplier: number) {
+  sumExperienceCost(
+    oldValue: number,
+    newValue: number,
+    multiplier: number,
+    acquisitionCost: number
+  ) {
     const isIncrease = newValue > oldValue
     const difference = Math.abs(newValue - oldValue)
     let baseCost = isIncrease ? oldValue : newValue
     let totalCost = 0
     for (let i = 0; i < difference; i++) {
-      totalCost += baseCost * multiplier
-      baseCost++
+      if (baseCost === 0) {
+        totalCost += acquisitionCost
+      } else {
+        totalCost += baseCost * multiplier
+        baseCost++
+      }
     }
     return totalCost
   }
@@ -164,5 +202,9 @@ export default class ExperienceCounter extends Application {
       const newChanged = { system: object[key] }
       return this.searchPropertyRecursively(newChanged)
     } else return key
+  }
+
+  storeItem(item: Item) {
+    this.previousItem = { ...item } as Item
   }
 }

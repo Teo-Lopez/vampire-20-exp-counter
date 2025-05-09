@@ -19,42 +19,27 @@ Hooks.once('init', () => {
   module.experienceCounter = new ExperienceCounter()
 })
 
-Hooks.on(
-  'updateItem',
-  (
-    item: Item,
-    changed: Changed,
-    options: DatabaseUpdateOperation,
-    userId: string
-  ) => {
-    console.log('================== HOOK Update Item ==================')
-    console.log('item', item)
-    console.log('changed', changed)
-    console.log('options', options)
-    console.log('userId', userId)
-    console.log('================== HOOK Update Item end ==================')
+Hooks.on('updateItem', (item: Item, changed: Changed) => {
+  console.log('================== HOOK Update Item ==================')
+  console.log('item', item)
+  console.log('changed', changed)
+  console.log('================== HOOK Update Item end ==================')
 
-    module.experienceCounter.maybeAddExperienceCost(changed, item.parent)
-  }
-)
+  module.experienceCounter.maybeAddItemExperienceCost(
+    changed,
+    item,
+    item.parent
+  )
+})
 
 Hooks.on('updateActor', (actor: Actor, changed: Changed) => {
-  console.log('================== HOOK Update Actor ==================')
-  console.log('changed', changed)
-  console.log('actor', actor)
-  console.log('================== HOOK Update Actor end ==================')
-
   module.experienceCounter.maybeAddExperienceCost(changed, actor)
 })
 
-Hooks.on(
-  'preUpdateActor',
-  (
-    actor: Actor
-    // changed: Changed,
-    // options: DatabaseUpdateOperation,
-    // userId: string
-  ) => {
-    module.experienceCounter.storeActor(actor)
-  }
-)
+Hooks.on('preUpdateActor', (actor: Actor) => {
+  module.experienceCounter.storeActor(actor)
+})
+
+Hooks.on('preUpdateItem', (item: Item) => {
+  module.experienceCounter.storeItem(item)
+})
