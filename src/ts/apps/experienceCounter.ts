@@ -1,48 +1,77 @@
+import { propertiesMap } from '../constants'
 import { Changed } from '../module'
 
 interface AttributeChange {
-  group: string
+  groupPath: string[]
   property: string
   oldValue: number
   newValue: number
   amount?: number
 }
+
+// Paths
+// abilities.key.value
+// attributes.key.value
+// advantages.virtues.key.permanent
+// advantages.key.permanent
+// advantages.key.permanent
+
+const primaryGroups = ['abilities', 'attributes', 'advantages']
+const secondaryGroups = ['virtues']
+
 export default class ExperienceCounter extends Application {
   previousActor: Actor | null = null
-  propertyGroupPaths = {
-    disciplines: 'wod.types.discipline',
-    disciplinePath: 'wod.types.disciplinepath',
-    attributes: 'attributes',
-    abilities: 'abilities',
-  }
+
   experienceMultipliers: Record<string, number> = {
     attributes: 4,
     abilities: 2,
+    power: 5,
+    conscience: 2, //virtues
+    courage: 2, //virtues
+    selfcontrol: 2, //virtues
+    path: 2,
+    willpower: 1,
+  }
+
+  acquisitionCosts: Record<string, number> = {
+    abilities: 3,
   }
 
   maybeAddExperienceCost(changed: Changed, actor: Actor) {
+    this.searchPropertyRecursively(changed)
+    this.updateAttribute(changed, actor)
+  }
+
+  updateAttribute(changed: Changed, actor: Actor) {
     if (!this.previousActor) return
+
     const attributeChangeData = this.getValuesChanged(
       changed,
       this.previousActor
     )
     const amount = this.calcExperienceCost(attributeChangeData)
+
     this.createExperienceItem({ amount, ...attributeChangeData }, actor)
   }
 
-  storeActor(actor: Actor) {
-    this.previousActor = { ...actor } as Actor
-  }
-
   getValuesChanged(changed: Changed, previousActor: Actor): AttributeChange {
-    const { group, property } = this.getPropertyChanged(changed)
-    const oldValue = (previousActor.system as Record<string, any>)[group][
-      property
-    ].value
-    const newValue = changed.system[group][property].value
+    const { groupPath, property } = this.getPropertyChanged(changed)
+
+    const isSecondaryGroup = groupPath.length > 1
+
+    const oldSystem = previousActor.system as Record<string, any>
+    const oldValue = isSecondaryGroup
+      ? this.getPropertyValue(oldSystem[groupPath[0]][groupPath[1]][property])
+      : this.getPropertyValue(oldSystem[groupPath[0]][property])
+
+    const newValue = isSecondaryGroup
+      ? this.getPropertyValue(
+          changed.system[groupPath[0]][groupPath[1]][property]
+        )
+      : this.getPropertyValue(changed.system[groupPath[0]][property])
 
     const valuesChanged = {
-      group,
+      groupPath,
       property,
       oldValue,
       newValue,
@@ -52,35 +81,27 @@ export default class ExperienceCounter extends Application {
   }
 
   private getPropertyChanged(changed: Changed): {
-    group: string
+    groupPath: string[]
     property: string
   } {
-    const propertiesChanged = { ...changed.system }
-    for (let group in this.propertyGroupPaths) {
-      if (propertiesChanged[group]) {
-        return {
-          group,
-          property: Object.keys(propertiesChanged[group])[0],
-        }
-      }
-    }
-
     return {
-      group: '',
-      property: '',
+      groupPath: this.getGroupChangedPath(changed),
+      property: this.getKeyChanged(changed),
     }
   }
 
-  calcExperienceCost({ group, oldValue, newValue }: AttributeChange) {
-    const multiplier = this.experienceMultipliers[group]
+  calcExperienceCost({
+    groupPath,
+    oldValue,
+    newValue,
+    property,
+  }: AttributeChange) {
+    const multiplier =
+      this.experienceMultipliers[groupPath[0]] ||
+      this.experienceMultipliers[property]
 
-    if (newValue > oldValue) {
-      return this.sumExperienceCost(oldValue, newValue, multiplier)
-    } else if (oldValue > newValue) {
-      return this.sumExperienceCost(newValue, oldValue, multiplier)
-    } else {
-      return 0
-    }
+    const amount = this.sumExperienceCost(oldValue, newValue, multiplier)
+    return amount || this.acquisitionCosts[groupPath[0]]
   }
 
   sumExperienceCost(oldValue: number, newValue: number, multiplier: number) {
@@ -92,7 +113,6 @@ export default class ExperienceCounter extends Application {
       totalCost += baseCost * multiplier
       baseCost++
     }
-    console.log(totalCost)
     return totalCost
   }
 
@@ -101,7 +121,7 @@ export default class ExperienceCounter extends Application {
     actor: Actor
   ) {
     const isIncrease = newValue > oldValue
-    const type = isIncrease ? 'wod.types.expgained' : 'wod.types.expspent'
+    const type = isIncrease ? 'wod.types.expspent' : 'wod.types.expgained'
     actor.createEmbeddedDocuments('Item', [
       {
         name: 'Gasto exp',
@@ -118,7 +138,7 @@ export default class ExperienceCounter extends Application {
           details: '',
           property: [],
           bonuslist: [],
-          isspent: true,
+          isspent: isIncrease,
           amount: amount,
           type,
         },
@@ -128,5 +148,41 @@ export default class ExperienceCounter extends Application {
         sort: 0,
       },
     ])
+  }
+
+  storeActor(actor: Actor) {
+    this.previousActor = { ...actor } as Actor
+  }
+
+  private getGroupChangedPath(changed: Changed) {
+    const primaryGroup = primaryGroups.find(
+      (group) => Object.keys(changed.system)[0] === group
+    )
+    if (!primaryGroup) throw Error('not valid value')
+
+    const secondaryGroup = secondaryGroups.find(
+      (group) => Object.keys(changed.system[primaryGroup])[0] === group
+    )
+
+    return secondaryGroup ? [primaryGroup, secondaryGroup] : [primaryGroup]
+  }
+
+  private getKeyChanged(changed: Changed): string {
+    const groupPath = this.getGroupChangedPath(changed)
+    const isSecondary = groupPath.length > 1
+    return isSecondary
+      ? Object.keys(changed.system[groupPath[0]][groupPath[1]])[0]
+      : Object.keys(changed.system[groupPath[0]])[0]
+  }
+
+  private getPropertyValue(property: Record<string, any>) {
+    return property.permanent || property.value
+  }
+
+  private searchPropertyRecursively(changed: Record<string, any>): string {
+    const object = changed.system || changed
+    const key = Object.keys(object)[0]
+    if (!propertiesMap[key]) return this.searchPropertyRecursively(object[key])
+    else return key
   }
 }

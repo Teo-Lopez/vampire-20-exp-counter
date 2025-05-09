@@ -8,6 +8,7 @@ import { MyModule } from './types'
 
 export interface Changed {
   system: Record<string, any>
+  _id: string
 }
 
 let module: MyModule
@@ -26,14 +27,23 @@ Hooks.on(
     options: DatabaseUpdateOperation,
     userId: string
   ) => {
+    console.log('================== HOOK Update Item ==================')
     console.log('item', item)
     console.log('changed', changed)
     console.log('options', options)
     console.log('userId', userId)
+    console.log('================== HOOK Update Item end ==================')
+
+    module.experienceCounter.maybeAddExperienceCost(changed, item.parent)
   }
 )
 
 Hooks.on('updateActor', (actor: Actor, changed: Changed) => {
+  console.log('================== HOOK Update Actor ==================')
+  console.log('changed', changed)
+  console.log('actor', actor)
+  console.log('================== HOOK Update Actor end ==================')
+
   module.experienceCounter.maybeAddExperienceCost(changed, actor)
 })
 
