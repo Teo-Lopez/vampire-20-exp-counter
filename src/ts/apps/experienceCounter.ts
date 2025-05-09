@@ -14,8 +14,7 @@ export default class ExperienceCounter extends Application {
 
   maybeAddItemExperienceCost(changed: Changed, item: Item, parent: Actor) {
     if (!this.previousItem) return
-    console.log('item', item)
-    console.log('parent', parent)
+
     const property = (item.system as Record<string, any>).type
     const propertyConfig = propertiesMap[property]
     if (!propertyConfig) {
