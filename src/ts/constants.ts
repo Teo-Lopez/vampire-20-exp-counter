@@ -1,5 +1,10 @@
 import { id } from '../module.json'
-
+// Paths
+// abilities.key.value
+// attributes.key.value
+// advantages.virtues.key.permanent
+// advantages.key.permanent
+// advantages.key.permanent
 export const moduleId = id
 export const abilities = {
   talent: {
