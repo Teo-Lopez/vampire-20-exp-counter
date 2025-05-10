@@ -1,18 +1,7 @@
-.window-app .window-content section.module-dog-picture-container {
-  flex: 100;
+.window-app .window-content .experience-counter {
   display: flex;
-  justify-content: center;
-  align-content: center;
-  margin-top: 10px;
-}
-
-.window-app .window-content section.module-dog-picture-container .module-dog-placeholder {
-  font-size: 200px;
-}
-
-.window-app .window-content section.module-dog-picture-container img.module-dog-image {
-  object-fit: contain;
-  border: none;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /*# sourceMappingURL=style.css.map */

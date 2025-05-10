@@ -195,7 +195,7 @@ export default class ExperienceCounter extends Application {
   }
 
   private searchPropertyRecursively(changed: Record<string, any>): string {
-    const object = changed.system || changed
+    const object = changed.system
     const key = Object.keys(object)[0]
     if (!propertiesMap[key]) {
       const newChanged = { system: object[key] }
