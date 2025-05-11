@@ -12,8 +12,7 @@
     "build": "tsc && vite build",
     "watch": "tsc && vite build --watch",
     "update-module": "bash ./scripts/update-module-json.sh",
-    "package": "7z a vampire-20-exp-counter.zip ./dist/",
-    "publish": "npm run update-module && npm run build && npm run zip-dist"
+    "package": "7z a vampire-20-exp-counter.zip ./dist/"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^12.331.3-beta",
