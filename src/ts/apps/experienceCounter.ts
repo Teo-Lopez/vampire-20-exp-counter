@@ -1,4 +1,4 @@
-import { propertiesMap } from '../constants'
+import { propertiesMap, validPaths } from '../constants'
 import { Changed } from '../module'
 
 interface AttributeChange {
@@ -196,7 +196,12 @@ export default class ExperienceCounter extends Application {
 
   private searchPropertyRecursively(changed: Record<string, any>): string {
     const object = changed.system
-    const key = Object.keys(object)[0]
+    const key: string | undefined = Object.keys(object).find((key) =>
+      validPaths.includes(key)
+    )
+
+    if (!key) throw Error('Property key not found')
+
     if (!propertiesMap[key]) {
       const newChanged = { system: object[key] }
       return this.searchPropertyRecursively(newChanged)

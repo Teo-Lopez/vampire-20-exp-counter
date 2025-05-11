@@ -29,13 +29,13 @@ jobs:
 
       - name: Create zip archive
         working-directory: dist
-        run: zip -r ./module.zip module.json style.css scripts/ templates/ languages/
+        run: zip -r ./vampire-20-exp-counter.zip module.json style.css scripts/ templates/ languages/
 
       - name: Upload zip file as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: module-zip
-          path: dist/module.zip
+          path: dist/vampire-20-exp-counter.zip
 
   release:
     needs: build
@@ -43,14 +43,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: module-zip
 
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: 'module.zip'
+          artifacts: 'vampire-20-exp-counter.zip'
           token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: true
           draft: false

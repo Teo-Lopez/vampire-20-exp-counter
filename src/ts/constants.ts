@@ -6,7 +6,7 @@ import { id } from '../module.json'
 // advantages.key.permanent
 // advantages.key.permanent
 export const moduleId = id
-export const abilities = {
+const abilities = {
   talent: {
     multiplier: 2,
     path: ['abilities'],
@@ -321,7 +321,7 @@ export const abilities = {
   },
 }
 
-export const attributes = {
+const attributes = {
   strength: {
     multiplier: 4,
     path: ['attributes'],
@@ -390,7 +390,7 @@ export const attributes = {
   },
 }
 
-export const virtues = {
+const virtues = {
   conscience: {
     multiplier: 2,
     path: ['advantages', 'virtues'],
@@ -411,7 +411,7 @@ export const virtues = {
   },
 }
 
-export const otherProperties = {
+const otherProperties = {
   path: {
     multiplier: 2,
     path: ['advantages'],
@@ -441,10 +441,22 @@ const itemProperties = {
   },
 }
 
-export const propertiesMap: Record<string, any> = {
+const propertiesMap: Record<string, any> = {
   ...abilities,
   ...attributes,
   ...virtues,
   ...otherProperties,
   ...itemProperties,
 }
+
+const allPaths = Object.values(propertiesMap)
+const validPaths: string[] = []
+
+for (let i = 0; i < allPaths.length; i++) {
+  const currentPathArray = allPaths[i].path
+  currentPathArray.forEach((pathPortion: string) => {
+    if (!validPaths.includes(pathPortion)) validPaths.push(pathPortion)
+  })
+}
+
+export { validPaths, propertiesMap }
