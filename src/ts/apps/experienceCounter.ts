@@ -81,6 +81,10 @@ export default class ExperienceCounter {
       valueKey
     )
 
+    if (!oldValue || !newValue) {
+      throw new Error('Old or new value not found')
+    }
+
     return {
       property,
       oldValue,
