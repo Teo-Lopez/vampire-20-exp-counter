@@ -8,7 +8,7 @@ interface AttributeChange {
   amount?: number
 }
 
-export default class ExperienceCounter extends Application {
+export default class ExperienceCounter {
   previousActor: Actor | null = null
   previousItem: Item | null = null
 
@@ -196,14 +196,19 @@ export default class ExperienceCounter extends Application {
 
   private searchPropertyRecursively(changed: Record<string, any>): string {
     const object = changed.system
-    const key: string | undefined = Object.keys(object).find((key) =>
-      validPaths.includes(key)
-    )
-
-    if (!key) throw Error('Property key not found')
+    console.log('object', object)
+    const group: string | undefined = Object.keys(object).find((key) => {
+      console.log('key', key)
+      return validPaths.includes(key)
+    })
+    console.log('group', group)
+    if (!group) throw Error('Property key not found')
+    const key = Object.keys(object[group])[0]
+    console.log('key', key)
 
     if (!propertiesMap[key]) {
-      const newChanged = { system: object[key] }
+      const newChanged = { system: object[group] }
+      console.log('newChanged', newChanged)
       return this.searchPropertyRecursively(newChanged)
     } else return key
   }

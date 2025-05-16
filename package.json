@@ -11,8 +11,8 @@
   "scripts": {
     "build": "tsc && vite build",
     "watch": "tsc && vite build --watch",
-    "update-module": "bash ./scripts/update-module-json.sh",
-    "package": "7z a vampire-20-exp-counter.zip ./dist/"
+    "package": "7z a vampire-20-exp-counter.zip ./dist/",
+    "test": "vitest --config ./vitest.config.ts"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^12.331.3-beta",
@@ -20,7 +20,8 @@
     "rollup-plugin-scss": "^3.0.0",
     "sass": "^1.54.8",
     "typescript": "5.4",
-    "vite": "^6.2.6"
+    "vite": "^6.2.6",
+    "vitest": "^3.1.3"
   },
   "dependencies": {
     "latest": "^0.2.0"

@@ -1,26 +1,30 @@
 {
-  "id": "vampire-20-exp-counter",
-  "title": "Vampire 20th Anniversary Edition Experience Counter",
-  "description": "A simple module to add an experience counter to the character sheet for Vampire: The Masquerade 20th Anniversary Edition.",
-  "version": "1.0.3",
-  "packs": [],
-  "system": [],
-  "dependencies": [],
-  "scripts": [],
-  "compatibility": {
-    "minimum": "12",
-    "verified": "12",
-    "maximum": "12"
-  },
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "languages/en.json"
-    }
-  ],
-  "styles": ["style.css"],
-  "esmodules": ["scripts/module.js"],
-  "manifest": "https://raw.githubusercontent.com/Teo-Lopez/vampire-20-exp-counter/refs/heads/main/src/module.json",
-  "download": "https://github.com/Teo-Lopez/vampire-20-exp-counter/releases/download/1.0.3/vampire-20-exp-counter.zip"
+    "id": "vampire-20-exp-counter",
+    "title": "Vampire 20th Anniversary Edition Experience Counter",
+    "description": "A simple module to add an experience counter to the character sheet for Vampire: The Masquerade 20th Anniversary Edition.",
+    "version": "1.0.2",
+    "packs": [],
+    "system": [],
+    "dependencies": [],
+    "scripts": [],
+    "compatibility": {
+        "minimum": "12",
+        "verified": "12",
+        "maximum": "12"
+    },
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "languages/en.json"
+        }
+    ],
+    "styles": [
+        "style.css"
+    ],
+    "esmodules": [
+        "scripts/module.js"
+    ],
+    "manifest": "https://raw.githubusercontent.com/Teo-Lopez/vampire-20-exp-counter/refs/heads/main/src/module.json",
+    "download": "https://github.com/Teo-Lopez/vampire-20-exp-counter/releases/download/1.0.3/vampire-20-exp-counter.zip"
 }
