@@ -26,5 +26,5 @@
         "scripts/module.js"
     ],
     "manifest": "https://raw.githubusercontent.com/Teo-Lopez/vampire-20-exp-counter/refs/heads/main/src/module.json",
-    "download": "https://github.com/Teo-Lopez/vampire-20-exp-counter/releases/download/1.0.3/vampire-20-exp-counter.zip"
+    "download": "https://github.com/Teo-Lopez/vampire-20-exp-counter/releases/download/1.0.4/vampire-20-exp-counter.zip"
 }
