@@ -1,5 +1,6 @@
 // Do not remove this import. If you do Vite will think your styles are dead
 // code and not include them in the build output.
+
 import '../styles/style.scss'
 import ExperienceCounter from './apps/experienceCounter'
 import { moduleId } from './constants'
@@ -17,16 +18,39 @@ Hooks.once('init', () => {
   module.experienceCounter = new ExperienceCounter()
 })
 
+Hooks.on('renderActorSheet', (app: ActorSheet, html: JQuery<HTMLElement>) => {
+  const actor = app.actor
+
+  const checkbox = $(`
+    <div class="form-group">
+      <label>Deshabilitar registro automático de exp</label>
+      <input type="checkbox" name="flags.experienceCounter.disabled" ${
+        getProperty(actor, 'flags.experienceCounter.disabled') ? 'checked' : ''
+      }/>
+    </div>
+  `)
+
+  html.find('.note').prepend(checkbox)
+})
+
+const isCounterEnabled = (actor: Actor) => {
+  return !getProperty(actor, 'flags.experienceCounter.disabled')
+}
+
 Hooks.on('updateItem', (item: Item, changed: Changed) => {
-  module.experienceCounter.maybeAddItemExperienceCost(
-    changed,
-    item,
-    item.parent
-  )
+  if (isCounterEnabled(item.parent)) {
+    module.experienceCounter.maybeAddItemExperienceCost(
+      changed,
+      item,
+      item.parent
+    )
+  }
 })
 
 Hooks.on('updateActor', (actor: Actor, changed: Changed) => {
-  module.experienceCounter.maybeAddExperienceCost(changed, actor)
+  if (isCounterEnabled(actor)) {
+    module.experienceCounter.maybeAddExperienceCost(changed, actor)
+  }
 })
 
 Hooks.on('preUpdateActor', (actor: Actor) => {
